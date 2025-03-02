@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Gestalt Exploration of 20th Century Art Movements</title>
+  <link rel="icon" type="image/svg+xml"
+      href="data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text x='50%' y='50%' dy='.35em' text-anchor='middle' font-size='60'>𓆟</text></svg>">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <!-- Import Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Import Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #e41f24;
+      --secondary-color: #000;
+      --text-color: #333;
+      --bg-color: #f8f8f8;
+      --panel-bg: rgba(0, 0, 0, 0.75);
+      --panel-text: #fff;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: var(--bg-color);
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 0;
+    }
+    
+    .header {
+      width: 100%;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
+    }
+    
+
+    
+    .inspired-by {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+    
+    .inspired-by a {
+      color: white;
+      text-decoration: underline;
+      transition: opacity 0.2s ease;
+    }
+    
+    .inspired-by a:hover {
+      opacity: 0.8;
+    }
+    
+    /* GitHub container styles removed */
+    
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+      padding: 2rem 1rem;
+      flex-grow: 1;
+    }
+    
+    canvas {
+      display: block;
+      margin: 1.5rem auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      max-width: 100%;
+      height: auto !important;
+    }
+    
+    .ui-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      width: 100%;
+    }
+    
+    button {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(228, 31, 36, 0.3);
+      flex: 1 1 auto;
+      min-width: 200px;
+      max-width: 350px;
+    }
+    
+    button:hover {
+      background: #c41218;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(228, 31, 36, 0.4);
+    }
+    
+    .slider-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      width: 100%;
+      max-width: 400px;
+      justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .slider-label {
+      width: 150px;
+      text-align: right;
+      margin-right: 16px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    
+    .slider {
+      flex-grow: 1;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #ddd;
+      outline: none;
+      border-radius: 4px;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    
+    .slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: var(--primary-color);
+      cursor: pointer;
+      border: none;
+      border-radius: 50%;
+    }
+    
+    .attributes-panel {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      justify-content: space-around;
+      margin-top: 1rem;
+      background-color: var(--panel-bg);
+      padding: 1.2rem;
+      border-radius: 8px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .attribute {
+      text-align: center;
+      width: 24%;
+      min-width: 150px;
+      margin-bottom: 10px;
+    }
+    
+    .attribute-name {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 4px;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+    }
+    
+    .attribute-value {
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      color: var(--panel-text);
+    }
+    
+    .footer {
+      width: 100%;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+    
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .footer-left, .footer-right {
+      margin: 0.5rem;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .social-links a {
+      color: white;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+    
+    .social-links a:hover {
+      opacity: 1;
+    }
+    
+    .color-red {
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 768px) {
+    /* Tone down the Inspired-by text */
+    .inspired-by {
+        font-size: 0.75rem;
+        font-weight: 300;
+    }
+    
+    /* "Flatten" the .ui-container so its children become direct flex items */
+    #main-content {
+        display: flex;
+        flex-direction: column;
+    }
+    .ui-container {
+        display: contents;
+    }
+    
+    /* Order: Slider above canvas */
+    .slider-container { 
+        order: 1; 
+    }
+    canvas {
+        order: 2;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Attributes panel comes after canvas */
+    .attributes-panel { 
+        order: 3; 
+    }
+    
+    /* Lock the Generate New Composition button at the bottom */
+    .controls {
+        order: 4;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        z-index: 1000;
+    }
+}
+.header p a i.fab {
+  color: #fff !important;
+}
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>SUPREMIR KINETIK</h1>
+    <p>
+        A gestalt exploration of 20th century art movements.  
+        <a href="https://github.com/galleri5/supremer-kinetik" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+    </p>
+    <p class="inspired-by">Inspired by <a href="https://x.com/IOivm/status/1894218453483229365" target="_blank">this tweet</a></p>
+  </div>
+  
+  <!-- GitHub container removed as requested -->
+  
+  <div id="main-content" class="main-content">
+    <div class="ui-container">
+      <div class="controls">
+        <button id="regenerateBtn"><i class="fas fa-sync-alt"></i> GENERATE NEW COMPOSITION</button>
+      </div>
+      <div class="slider-container">
+        <div class="slider-label">HARMONIC TENSION</div>
+        <input type="range" min="10" max="100" value="50" class="slider" id="densitySlider">
+      </div>
+      <div class="attributes-panel" id="attributesPanel">
+        <div class="attribute">
+          <div class="attribute-name">MOVEMENT</div>
+          <div class="attribute-value" id="movementValue">FUTURISM</div>
+        </div>
+        <div class="attribute">
+          <div class="attribute-name">TECHNIQUE</div>
+          <div class="attribute-value" id="techniqueValue">IMPASTO</div>
+        </div>
+        <div class="attribute">
+          <div class="attribute-name">COMPOSITION</div>
+          <div class="attribute-value" id="compositionValue">RADIAL</div>
+        </div>
+        <div class="attribute">
+          <div class="attribute-name">STYLE</div>
+          <div class="attribute-value" id="styleValue">ANGULAR</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Canvas will be inserted here by p5.js -->
+  </div>
+  
+  <div class="footer">
+    <div class="footer-content">
+      <div class="footer-left">
+        <p>Vibe coded with <span class="color-red">✨</span> and p5js by <a href="http://linkdot.link" target="_blank"> Harsha </a> at <strong> <a href="https://github.com/galleri5" target="_blank"> galleri5 </a> </strong> ( part of Collective Artists Network ) </p>
+      </div>
+      <div class="footer-right">
+        <div class="social-links">
+          <a href="https://github.com/galleri5/supremer-kinetik" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- GitHub Buttons JS removed -->
+  
+  <script>
+    let sketch = function(p) {
+      // Color palettes inspired by Futurism, Constructivism, and Suprematism
+      const colorPalettesData = [
+        // Futurist - vibrant with contrast
+        [{r: 220, g: 40, b: 40}, {r: 240, g: 200, b: 0}, {r: 0, g: 100, b: 200}, {r: 0, g: 0, b: 0}, {r: 255, g: 255, b: 255}],
+        
+        // Constructivist - industrial, bold
+        [{r: 200, g: 0, b: 0}, {r: 0, g: 0, b: 0}, {r: 255, g: 255, b: 255}, {r: 240, g: 240, b: 0}, {r: 0, g: 100, b: 160}],
+        
+        // Suprematist - minimal, geometric
+        [{r: 0, g: 0, b: 0}, {r: 255, g: 255, b: 255}, {r: 220, g: 0, b: 0}, {r: 0, g: 80, b: 150}, {r: 240, g: 240, b: 0}],
+        
+        // Bauhaus - primary colors with black
+        [{r: 220, g: 50, b: 50}, {r: 30, g: 60, b: 190}, {r: 240, g: 220, b: 0}, {r: 0, g: 0, b: 0}, {r: 255, g: 255, b: 255}],
+      ];
+      
+      // Art movements
+      const artMovements = [
+        "futurism",
+        "constructivism",
+        "suprematism",
+        "bauhaus",
+        "vorticism",
+        "rayonism"
+      ];
+      
+      // Painting techniques to use
+      const techniques = [
+        "impasto",
+        "sgraffito",
+        "dryBrush"
+      ];
+      
+      // Composition types
+      const compositionTypes = [
+        "radial",
+        "diagonal",
+        "grid",
+        "spiral",
+        "triangular",
+        "focal-point"
+      ];
+      
+      // Style variations
+      const styleVariations = [
+        "angular",
+        "curved",
+        "fragmented",
+        "geometric",
+        "energetic",
+        "crystalline"
+      ];
+      
+      let colorPalettes = [];
+      let selectedPalette;
+      let currentTechnique;
+      let currentMovement;
+      let compositionType;
+      let styleVariation;
+      let densityFactor = 0.5; // Default value
+      
+      let shapes = [];
+      let lines = [];
+      let dynamicMotionLines = [];
+      let geometricElements = [];
+      let dynamicBrushStrokes = [];
+      let underlayers = [];
+      let canvasTexture;
+      
+      // Variables for composition
+      let focusPoint = {x: 0, y: 0};
+      let secondaryFocusPoint = {x: 0, y: 0};
+      let dynamicDirection = 0;
+      
+      let canvas;
+      let canvasSize;
+      
+      function calculateCanvasSize() {
+        // Calculate canvas size based on screen size
+        const maxSize = 800;
+        const containerWidth = document.getElementById('main-content').offsetWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Take the smaller of these dimensions with a minimum of 300px
+        canvasSize = Math.max(300, Math.min(maxSize, containerWidth - 40, windowHeight * 0.7));
+        return canvasSize;
+      }
+      
+      p.setup = function() {
+        canvasSize = calculateCanvasSize();
+        canvas = p.createCanvas(canvasSize, canvasSize);
+        canvas.parent('main-content');
+        p.pixelDensity(1);
+        p.frameRate(30);
+        p.noLoop(); // Static compositions only
+        
+        // Convert color palette data to p5.Color objects
+        colorPalettes = colorPalettesData.map(palette => {
+          return palette.map(colorData => {
+            return p.color(colorData.r, colorData.g, colorData.b);
+          });
+        });
+        
+        // Create canvas texture for base
+        canvasTexture = p.createGraphics(p.width, p.height);
+        createCanvasTexture();
+        
+        // Set up the slider event
+        document.getElementById("densitySlider").addEventListener("input", function() {
+          densityFactor = this.value / 100;
+          generateNewComposition();
+          p.redraw();
+        });
+        
+        // Generate initial composition
+        generateNewComposition();
+        
+        // Add button event listener
+        document.getElementById("regenerateBtn").addEventListener("click", function() {
+          generateNewComposition();
+          p.redraw();
+        });
+      };
+
+      function createCanvasTexture() {
+        canvasTexture.background(240, 240, 235);
+        
+        // Create subtle canvas weave texture
+        canvasTexture.loadPixels();
+        for (let x = 0; x < canvasTexture.width; x++) {
+          for (let y = 0; y < canvasTexture.height; y++) {
+            let idx = (x + y * canvasTexture.width) * 4;
+            
+            // Subtle grid pattern for construction feeling
+            let gridValue = ((x % 20 === 0) || (y % 20 === 0)) ? 5 : 0;
+            
+            // Add some noise
+            let noiseVal = p.noise(x * 0.02, y * 0.02) * 12 - 6;
+            
+            canvasTexture.pixels[idx] += noiseVal - gridValue;
+            canvasTexture.pixels[idx+1] += noiseVal - gridValue;
+            canvasTexture.pixels[idx+2] += noiseVal - gridValue;
+          }
+        }
+        canvasTexture.updatePixels();
+      }
+
+      function generateNewComposition() {
+        // Reset arrays
+        shapes = [];
+        lines = [];
+        dynamicMotionLines = [];
+        geometricElements = [];
+        dynamicBrushStrokes = [];
+        underlayers = [];
+        
+        // Randomly select attributes
+        currentMovement = p.random(artMovements);
+        currentTechnique = p.random(techniques);
+        compositionType = p.random(compositionTypes);
+        styleVariation = p.random(styleVariations);
+        
+        // Select palette
+        selectedPalette = p.random(colorPalettes);
+        
+        // Set composition variables
+        setupCompositionPoints();
+        
+        // Create base composition based on selected attributes
+        createComposition();
+        
+        // Apply the selected technique
+        switch(currentTechnique) {
+          case "impasto":
+            applyImpastoTechnique();
+            break;
+          case "sgraffito":
+            applySgraffitoTechnique();
+            break;
+          case "dryBrush":
+            applyDryBrushTechnique();
+            break;
+        }
+        
+        // Update UI
+        updateAttributeDisplay();
+      }
+      
+      function setupCompositionPoints() {
+        // Set up composition points based on composition type
+        switch(compositionType) {
+          case "radial":
+            focusPoint = {
+              x: p.width/2 + p.random(-50, 50),
+              y: p.height/2 + p.random(-50, 50)
+            };
+            dynamicDirection = p.random(p.TWO_PI);
+            break;
+            
+          case "diagonal":
+            dynamicDirection = p.random([p.PI/4, p.PI*3/4, p.PI*5/4, p.PI*7/4]);
+            focusPoint = {
+              x: p.random(p.width * 0.3),
+              y: p.random(p.height * 0.3)
+            };
+            secondaryFocusPoint = {
+              x: p.width - focusPoint.x,
+              y: p.height - focusPoint.y
+            };
+            break;
+            
+          case "grid":
+            focusPoint = {
+              x: p.width/2,
+              y: p.height/2
+            };
+            dynamicDirection = 0; // Horizontal/vertical alignment
+            break;
+            
+          case "spiral":
+            focusPoint = {
+              x: p.width/2 + p.random(-100, 100),
+              y: p.height/2 + p.random(-100, 100)
+            };
+            dynamicDirection = p.random([-1, 1]) * 0.1; // Spiral direction and tightness
+            break;
+            
+          case "triangular":
+            focusPoint = {
+              x: p.width/2,
+              y: p.height/3
+            };
+            secondaryFocusPoint = {
+              x: p.width/3,
+              y: p.height*2/3
+            };
+            break;
+            
+          case "focal-point":
+            focusPoint = {
+              x: p.random(p.width * 0.3, p.width * 0.7),
+              y: p.random(p.height * 0.3, p.height * 0.7)
+            };
+            dynamicDirection = p.random(p.TWO_PI);
+            break;
+        }
+      }
+      
+      function updateAttributeDisplay() {
+        // Update the displayed attributes in the UI
+        document.getElementById("movementValue").textContent = currentMovement.toUpperCase();
+        document.getElementById("techniqueValue").textContent = currentTechnique.toUpperCase();
+        document.getElementById("compositionValue").textContent = compositionType.toUpperCase();
+        document.getElementById("styleValue").textContent = styleVariation.toUpperCase();
+      }
+      
+      function createComposition() {
+        // Create underlying base color/texture
+        underlayers.push({
+          color: p.random(selectedPalette),
+          type: "base"
+        });
+        
+        // Create elements based on the movement
+        switch(currentMovement) {
+          case "futurism":
+            createFuturistElements();
+            break;
+          case "constructivism":
+            createConstructivistElements();
+            break;
+          case "suprematism":
+            createSuprematistElements();
+            break;
+          case "bauhaus":
+            createBauhausElements();
+            break;
+          case "vorticism":
+            createVorticistElements();
+            break;
+          case "rayonism":
+            createRayonistElements();
+            break;
+        }
+        
+        // Apply style variation
+        applyStyleVariation();
+        
+        // Add dynamic brush strokes that will be rendered with the selected technique
+        createDynamicBrushwork();
+      }
+      
+      // Movement-specific element creation functions
+      
+      function createFuturistElements() {
+        // Futurism emphasizes speed, technology, dynamic movement
+        const centerX = focusPoint.x;
+        const centerY = focusPoint.y;
+        const mainDirection = dynamicDirection;
+        
+        // Create radiating speed lines
+        const speedLineCount = p.floor(p.map(densityFactor, 0.1, 1.0, 10, 60));
+        for (let i = 0; i < speedLineCount; i++) {
+          const angle = mainDirection + p.random(-p.PI/2, p.PI/2);
+          const length = p.random(100, 400) * p.map(densityFactor, 0.1, 1.0, 0.5, 1.5);
+          const width = p.random(2, 20) * p.map(densityFactor, 0.1, 1.0, 0.5, 1.2);
+          
+          lines.push({
+            x1: centerX,
+            y1: centerY,
+            x2: centerX + p.cos(angle) * length,
+            y2: centerY + p.sin(angle) * length,
+            width: width,
+            color: p.random(selectedPalette),
+            type: "speed"
+          });
+        }
+        
+        // Create fragmented shapes representing motion
+        const fragmentCount = p.floor(p.map(densityFactor, 0.1, 1.0, 3, 25));
+        for (let i = 0; i < fragmentCount; i++) {
+          const angle = mainDirection + p.random(-p.PI/3, p.PI/3);
+          const distance = p.random(50, 200) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const size = p.random(30, 150) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          
+          const x = centerX + p.cos(angle) * distance;
+          const y = centerY + p.sin(angle) * distance;
+          
+          shapes.push({
+            x: x,
+            y: y,
+            width: size,
+            height: size * p.random(0.5, 2.0),
+            rotation: angle,
+            color: p.random(selectedPalette),
+            type: "fragment"
+          });
+        }
+        
+        // Create trails of repeated forms (simultaneity)
+        const trailCount = p.floor(p.random(2, 6) * densityFactor);
+        for (let i = 0; i < trailCount; i++) {
+          const angle = mainDirection + p.random(-p.PI/6, p.PI/6);
+          const repeats = p.floor(p.random(3, 8) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.2));
+          const shape = p.random(["circle", "triangle", "rectangle"]);
+          const baseSize = p.random(20, 80) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const baseColor = p.random(selectedPalette);
+          
+          for (let j = 0; j < repeats; j++) {
+            const t = j / (repeats - 1);
+            const distance = p.map(t, 0, 1, 50, 300) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+            const size = baseSize * (1 - t * 0.7);
+            const x = centerX + p.cos(angle) * distance;
+            const y = centerY + p.sin(angle) * distance;
+            
+            const alpha = p.map(t, 0, 1, 255, 100);
+            const trailColor = p.color(p.red(baseColor), p.green(baseColor), p.blue(baseColor), alpha);
+            
+            geometricElements.push({
+              x: x,
+              y: y,
+              size: size,
+              shape: shape,
+              rotation: angle + p.random(-p.PI/4, p.PI/4),
+              color: trailColor,
+              type: "trail"
+            });
+          }
+        }
+      }
+      
+      function createConstructivistElements() {
+        // Constructivism emphasizes structure, industrial forms, bold geometry
+        const gridSize = p.floor(p.random(3, 7) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3));
+        const cellSize = p.min(p.width, p.height) / gridSize;
+        
+        for (let i = 0; i < gridSize; i++) {
+          for (let j = 0; j < gridSize; j++) {
+            // Skip some cells for dynamic composition
+            if (p.random() > 0.5 * densityFactor) continue;
+            
+            const x = i * cellSize + cellSize/2;
+            const y = j * cellSize + cellSize/2;
+            const size = cellSize * p.random(0.5, 0.9);
+            
+            // Create constructivist shape
+            geometricElements.push({
+              x: x,
+              y: y,
+              size: size,
+              shape: p.random(["rectangle", "circle", "triangle", "line"]),
+              rotation: p.random([0, p.PI/4, p.PI/2, p.PI*3/4]),
+              color: p.random(selectedPalette),
+              type: "construct"
+            });
+            
+            // Add connecting lines between some elements
+            if (p.random() > 0.7 - (0.2 * densityFactor) && i > 0 && j > 0) {
+              lines.push({
+                x1: x,
+                y1: y,
+                x2: (i-1) * cellSize + cellSize/2,
+                y2: (j-1) * cellSize + cellSize/2,
+                width: p.random(1, 5),
+                color: p.random(selectedPalette),
+                type: "structural"
+              });
+            }
+          }
+        }
+        
+        // Add bold diagonal lines for dynamism
+        const diagonalCount = p.floor(p.random(3, 15) * densityFactor);
+        for (let i = 0; i < diagonalCount; i++) {
+          const x1 = p.random(p.width);
+          const y1 = p.random(p.height);
+          const length = p.random(100, 400) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const angle = p.random([0, p.PI/4, p.PI/2, p.PI*3/4, p.PI]);
+          
+          lines.push({
+            x1: x1,
+            y1: y1,
+            x2: x1 + p.cos(angle) * length,
+            y2: y1 + p.sin(angle) * length,
+            width: p.random(5, 20),
+            color: p.random(selectedPalette),
+            type: "diagonal"
+          });
+        }
+      }
+      
+      function createSuprematistElements() {
+        // Suprematism emphasizes pure abstraction, floating geometric forms
+        const centerX = p.width/2 + p.random(-100, 100);
+        const centerY = p.height/2 + p.random(-100, 100);
+        const mainSize = p.random(100, 250) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+        
+        // Central shape is often a square or rectangle in suprematism
+        geometricElements.push({
+          x: centerX,
+          y: centerY,
+          size: mainSize,
+          shape: p.random(["rectangle", "circle", "cross"]),
+          rotation: p.random(p.TWO_PI),
+          color: p.random(selectedPalette),
+          type: "primary"
+        });
+        
+        // Add floating geometric forms
+        const floatingFormCount = p.floor(p.map(densityFactor, 0.1, 1.0, 3, 25));
+        
+        for (let i = 0; i < floatingFormCount; i++) {
+          const distance = p.random(100, 400) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.2);
+          const angle = p.random(p.TWO_PI);
+          const x = centerX + p.cos(angle) * distance;
+          const y = centerY + p.sin(angle) * distance;
+          const size = p.random(20, 150) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.2);
+          
+          geometricElements.push({
+            x: x,
+            y: y,
+            size: size,
+            shape: p.random(["rectangle", "circle", "triangle", "cross", "line"]),
+            rotation: p.random(p.TWO_PI),
+            color: p.random(selectedPalette),
+            type: "floating"
+          });
+        }
+      }
+      
+      function createBauhausElements() {
+        // Bauhaus emphasizes clean geometry, primary colors, functional forms
+        const grid = [];
+        const divisions = p.floor(p.random(3, 8) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3));
+        const cellWidth = p.width / divisions;
+        const cellHeight = p.height / divisions;
+        
+        // Fill the grid with some cells
+        for (let i = 0; i < divisions; i++) {
+          for (let j = 0; j < divisions; j++) {
+            if (p.random() > 0.6 - (0.2 * densityFactor)) {
+              grid.push({
+                x: i * cellWidth,
+                y: j * cellHeight,
+                width: cellWidth,
+                height: cellHeight,
+                filled: p.random() > 0.5,
+                color: p.random(selectedPalette)
+              });
+            }
+          }
+        }
+        
+        // Render grid cells as shapes
+        for (let cell of grid) {
+          if (cell.filled) {
+            shapes.push({
+              x: cell.x + cell.width/2,
+              y: cell.y + cell.height/2,
+              width: cell.width,
+              height: cell.height,
+              rotation: 0,
+              color: cell.color,
+              type: "grid-cell"
+            });
+          } else {
+            // Just draw the outline
+            lines.push({
+              x1: cell.x,
+              y1: cell.y,
+              x2: cell.x + cell.width,
+              y2: cell.y,
+              width: p.random(1, 3),
+              color: cell.color,
+              type: "grid-line"
+            });
+            lines.push({
+              x1: cell.x + cell.width,
+              y1: cell.y,
+              x2: cell.x + cell.width,
+              y2: cell.y + cell.height,
+              width: p.random(1, 3),
+              color: cell.color,
+              type: "grid-line"
+            });
+            lines.push({
+              x1: cell.x + cell.width,
+              y1: cell.y + cell.height,
+              x2: cell.x,
+              y2: cell.y + cell.height,
+              width: p.random(1, 3),
+              color: cell.color,
+              type: "grid-line"
+            });
+            lines.push({
+              x1: cell.x,
+              y1: cell.y + cell.height,
+              x2: cell.x,
+              y2: cell.y,
+              width: p.random(1, 3),
+              color: cell.color,
+              type: "grid-line"
+            });
+          }
+        }
+        
+        // Add geometric forms
+        const formCount = p.floor(p.random(5, 20) * densityFactor);
+        for (let i = 0; i < formCount; i++) {
+          const x = p.random(p.width);
+          const y = p.random(p.height);
+          const size = p.random(30, 100) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          
+          geometricElements.push({
+            x: x,
+            y: y,
+            size: size,
+            shape: p.random(["circle", "rectangle", "triangle"]),
+            rotation: p.random([0, p.PI/4, p.PI/2, p.PI*3/4]),
+            color: p.random(selectedPalette),
+            type: "bauhaus-form"
+          });
+        }
+      }
+      
+      function createVorticistElements() {
+        // Vorticism combines Futurist dynamism with geometric abstraction
+        const centerX = focusPoint.x;
+        const centerY = focusPoint.y;
+        
+        // Create vortex-like radiating wedges
+        const wedgeCount = p.floor(p.random(5, 15) * densityFactor);
+        const totalAngle = p.TWO_PI;
+        const wedgeAngle = totalAngle / wedgeCount;
+        
+        for (let i = 0; i < wedgeCount; i++) {
+          const startAngle = i * wedgeAngle;
+          const endAngle = (i + 1) * wedgeAngle;
+          const innerRadius = p.random(20, 80) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const outerRadius = p.random(150, 350) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          
+          // Create wedge as a custom shape
+          shapes.push({
+            center: {x: centerX, y: centerY},
+            innerRadius: innerRadius,
+            outerRadius: outerRadius,
+            startAngle: startAngle,
+            endAngle: endAngle,
+            color: p.random(selectedPalette),
+            type: "vortex-wedge"
+          });
+          
+          // Add radiating lines
+          if (p.random() > 0.3) {
+            const midAngle = (startAngle + endAngle) / 2;
+            lines.push({
+              x1: centerX,
+              y1: centerY,
+              x2: centerX + p.cos(midAngle) * outerRadius,
+              y2: centerY + p.sin(midAngle) * outerRadius,
+              width: p.random(1, 5),
+              color: p.random(selectedPalette),
+              type: "vortex-line"
+            });
+          }
+        }
+      }
+      
+      function createRayonistElements() {
+        // Rayonism focuses on dynamic light rays and intersecting lines
+        const originCount = p.floor(p.random(3, 8) * densityFactor);
+        const origins = [];
+        
+        for (let i = 0; i < originCount; i++) {
+          origins.push({
+            x: p.random(p.width),
+            y: p.random(p.height),
+            color: p.random(selectedPalette)
+          });
+        }
+        
+        // Create intersecting rays from each origin
+        for (let origin of origins) {
+          const rayCount = p.floor(p.random(5, 15) * densityFactor);
+          
+          for (let i = 0; i < rayCount; i++) {
+            const angle = p.random(p.TWO_PI);
+            const length = p.random(100, 500) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+            
+            lines.push({
+              x1: origin.x,
+              y1: origin.y,
+              x2: origin.x + p.cos(angle) * length,
+              y2: origin.y + p.sin(angle) * length,
+              width: p.random(1, 8),
+              color: origin.color,
+              type: "ray"
+            });
+          }
+        }
+      }
+      
+      // Apply style variations
+      
+      function applyStyleVariation() {
+        switch(styleVariation) {
+          case "angular":
+            // Make shapes more angular with clean edges
+            for (let shape of shapes) {
+              shape.isAngular = true;
+            }
+            break;
+            
+          case "curved":
+            // Add curves to lines
+            for (let line of lines) {
+              const perpAngle = p.atan2(line.y2 - line.y1, line.x2 - line.x1) + p.PI/2;
+              const dist = p.dist(line.x1, line.y1, line.x2, line.y2);
+              const curveAmount = p.random(-dist * 0.3, dist * 0.3);
+              
+              line.ctrlX = (line.x1 + line.x2) / 2 + p.cos(perpAngle) * curveAmount;
+              line.ctrlY = (line.y1 + line.y2) / 2 + p.sin(perpAngle) * curveAmount;
+              line.type = "curved";
+            }
+            break;
+            
+          case "fragmented":
+            // Fragment shapes into smaller pieces
+            const newFragments = [];
+            for (let shape of shapes) {
+              if (p.random() > 0.7) {
+                const fragmentCount = p.floor(p.random(2, 5));
+                
+                for (let i = 0; i < fragmentCount; i++) {
+                  const offsetX = p.random(-shape.width * 0.3, shape.width * 0.3);
+                  const offsetY = p.random(-shape.height * 0.3, shape.height * 0.3);
+                  const scaleX = p.random(0.3, 0.7);
+                  const scaleY = p.random(0.3, 0.7);
+                  
+                  newFragments.push({
+                    x: shape.x + offsetX,
+                    y: shape.y + offsetY,
+                    width: shape.width * scaleX,
+                    height: shape.height * scaleY,
+                    rotation: shape.rotation + p.random(-p.PI/6, p.PI/6),
+                    color: shape.color,
+                    type: "fragment"
+                  });
+                }
+                
+                shape.remove = true;
+              }
+            }
+            
+            // Add new fragments and remove originals
+            shapes = shapes.filter(shape => !shape.remove);
+            shapes = shapes.concat(newFragments);
+            break;
+            
+          case "geometric":
+            // Add more geometric elements
+            const extraGeometricCount = p.floor(p.random(5, 15) * densityFactor);
+            
+            for (let i = 0; i < extraGeometricCount; i++) {
+              const x = p.random(p.width);
+              const y = p.random(p.height);
+              const size = p.random(20, 80) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+              
+              geometricElements.push({
+                x: x,
+                y: y,
+                size: size,
+                shape: p.random(["circle", "rectangle", "triangle", "hexagon"]),
+                rotation: p.random(p.TWO_PI),
+                color: p.random(selectedPalette),
+                type: "geometric"
+              });
+            }
+            break;
+            
+          case "energetic":
+            // Add bursts of energy lines
+            const burstCount = p.floor(p.random(3, 10) * densityFactor);
+            
+            for (let i = 0; i < burstCount; i++) {
+              const x = p.random(p.width);
+              const y = p.random(p.height);
+              const radius = p.random(30, 100) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+              
+              // Create a burst of lines
+              const lineCount = p.floor(p.random(8, 16));
+              
+              for (let j = 0; j < lineCount; j++) {
+                const angle = (j / lineCount) * p.TWO_PI;
+                
+                lines.push({
+                  x1: x,
+                  y1: y,
+                  x2: x + p.cos(angle) * radius,
+                  y2: y + p.sin(angle) * radius,
+                  width: p.random(1, 5),
+                  color: p.random(selectedPalette),
+                  type: "burst"
+                });
+              }
+            }
+            break;
+            
+          case "crystalline":
+            // Create crystalline, faceted forms
+            const crystalCount = p.floor(p.random(5, 15) * densityFactor);
+            
+            for (let i = 0; i < crystalCount; i++) {
+              const x = p.random(p.width);
+              const y = p.random(p.height);
+              const size = p.random(30, 100) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+              
+              shapes.push({
+                x: x,
+                y: y,
+                width: size,
+                height: size * p.random(1, 3),
+                points: p.floor(p.random(4, 8)), // Number of crystal points
+                rotation: p.random(p.TWO_PI),
+                color: p.random(selectedPalette),
+                type: "crystal"
+              });
+            }
+            break;
+        }
+      }
+      
+      function createDynamicBrushwork() {
+        // Create brush strokes that will be rendered with the selected technique
+        const strokeCount = p.floor(p.map(densityFactor, 0.1, 1.0, 20, 80));
+        
+        for (let i = 0; i < strokeCount; i++) {
+          const x1 = p.random(p.width);
+          const y1 = p.random(p.height);
+          const angle = dynamicDirection + p.random(-p.PI/2, p.PI/2);
+          const length = p.random(30, 150) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const x2 = x1 + p.cos(angle) * length;
+          const y2 = y1 + p.sin(angle) * length;
+          
+          dynamicBrushStrokes.push({
+            x1: x1,
+            y1: y1,
+            x2: x2,
+            y2: y2,
+            width: p.random(3, 20),
+            color: p.random(selectedPalette),
+            pressure: p.random(0.3, 1.0),
+            turbulence: p.random(5, 20),
+            type: "dynamic"
+          });
+        }
+      }
+      
+      // Technique application functions
+      
+      function applyImpastoTechnique() {
+        // Impasto technique adds thick, textured paint
+        
+        // For each dynamic brush stroke, add impasto settings
+        for (let stroke of dynamicBrushStrokes) {
+          stroke.thickness = p.random(5, 15);
+          stroke.bristleDetail = "high";
+        }
+        
+        // For geometric elements, add impasto blob settings
+        for (let element of geometricElements) {
+          element.height = p.random(10, 25);
+          element.ridges = p.floor(p.random(3, 8));
+          element.detailLevel = "high";
+        }
+        
+        // For lines, add impasto settings
+        for (let line of lines) {
+          line.thickness = p.random(5, 15);
+          line.turbulence = p.random(5, 15);
+        }
+      }
+      
+      function applySgraffitoTechnique() {
+        // Sgraffito technique involves scratching through layers
+        
+        // Create base layers
+        underlayers = [];
+        
+        // First bottom layer (will be revealed by scratches)
+        underlayers.push({
+          color: selectedPalette[p.floor(p.random(selectedPalette.length))],
+          thickness: p.random(10, 20),
+          type: "base"
+        });
+        
+        // Top layer that will be scratched
+        underlayers.push({
+          color: selectedPalette[p.floor(p.random(selectedPalette.length))],
+          thickness: p.random(5, 15),
+          type: "topLayer"
+        });
+        
+        // Convert dynamic brush strokes to sgraffito cuts
+        for (let i = 0; i < dynamicBrushStrokes.length; i++) {
+          const stroke = dynamicBrushStrokes[i];
+          
+          dynamicBrushStrokes[i] = {
+            x: (stroke.x1 + stroke.x2) / 2,
+            y: (stroke.y1 + stroke.y2) / 2,
+            length: p.dist(stroke.x1, stroke.y1, stroke.x2, stroke.y2),
+            angle: p.atan2(stroke.y2 - stroke.y1, stroke.x2 - stroke.x1),
+            width: p.random(1, 10),
+            curve: p.random(-0.3, 0.3),
+            revealColor: underlayers[0].color,
+            type: "cut"
+          };
+        }
+      }
+      
+      function applyDryBrushTechnique() {
+        // Dry brush technique creates broken, textured strokes
+        
+        // Create textured underlayer
+        underlayers = [{
+          color: p.random(selectedPalette),
+          texture: "rough",
+          type: "base"
+        }];
+        
+        // For each dynamic brush stroke, add dry brush settings
+        for (let stroke of dynamicBrushStrokes) {
+          stroke.pressure = p.random(0.2, 0.8); // Low pressure for dry brush
+          stroke.breakage = p.random(0.3, 0.7); // How broken the stroke is
+        }
+        
+        // Add more broken strokes for texture
+        const additionalStrokeCount = p.floor(p.random(30, 100) * densityFactor);
+        
+        for (let i = 0; i < additionalStrokeCount; i++) {
+          const x1 = p.random(p.width);
+          const y1 = p.random(p.height);
+          const angle = dynamicDirection + p.random(-p.PI/2, p.PI/2);
+          const length = p.random(10, 80) * p.map(densityFactor, 0.1, 1.0, 0.7, 1.3);
+          const x2 = x1 + p.cos(angle) * length;
+          const y2 = y1 + p.sin(angle) * length;
+          
+          dynamicBrushStrokes.push({
+            x1: x1,
+            y1: y1,
+            x2: x2,
+            y2: y2,
+            width: p.random(1, 8),
+            color: p.random(selectedPalette),
+            pressure: p.random(0.1, 0.6),
+            breakage: p.random(0.4, 0.8),
+            type: "texture"
+          });
+        }
+      }
+
+      p.draw = function() {
+        // Display canvas texture background
+        p.image(canvasTexture, 0, 0, p.width, p.height);
+        
+        // Render the composition with the selected technique
+        switch(currentTechnique) {
+          case "impasto":
+            renderImpastoComposition();
+            break;
+          case "sgraffito":
+            renderSgraffitoComposition();
+            break;
+          case "dryBrush":
+            renderDryBrushComposition();
+            break;
+        }
+        
+        // Add canvas vignette
+        addVignette();
+      };
+      
+      // Rendering functions for each technique
+      
+      function renderImpastoComposition() {
+        // First render base layer
+        for (let layer of underlayers) {
+          if (layer.type === "base") {
+            p.fill(layer.color);
+            p.noStroke();
+            p.rect(0, 0, p.width, p.height);
+          }
+        }
+        
+        // Render shapes
+        for (let shape of shapes) {
+          if (shape.type === "vortex-wedge") {
+            // Render vortex wedge shape
+            p.push();
+            p.translate(shape.center.x, shape.center.y);
+            p.fill(shape.color);
+            p.noStroke();
+            
+            p.beginShape();
+            // Inner arc
+            for (let angle = shape.startAngle; angle <= shape.endAngle; angle += 0.1) {
+              const x = p.cos(angle) * shape.innerRadius;
+              const y = p.sin(angle) * shape.innerRadius;
+              p.vertex(x, y);
+            }
+            
+            // Outer arc (go backwards)
+            for (let angle = shape.endAngle; angle >= shape.startAngle; angle -= 0.1) {
+              const x = p.cos(angle) * shape.outerRadius;
+              const y = p.sin(angle) * shape.outerRadius;
+              p.vertex(x, y);
+            }
+            
+            p.endShape(p.CLOSE);
+            p.pop();
+          } else if (shape.type === "crystal") {
+            // Render crystal shape
+            p.push();
+            p.translate(shape.x, shape.y);
+            p.rotate(shape.rotation);
+            
+            p.fill(shape.color);
+            p.noStroke();
+            
+            p.beginShape();
+            // Create crystal points
+            for (let i = 0; i < shape.points; i++) {
+              const angle = (i / shape.points) * p.TWO_PI;
+              const radius = (i % 2 === 0) ? shape.width / 2 : shape.height / 2;
+              const x = p.cos(angle) * radius;
+              const y = p.sin(angle) * radius;
+              p.vertex(x, y);
+            }
+            p.endShape(p.CLOSE);
+            
+            p.pop();
+          } else {
+            // Render regular shape
+            p.push();
+            p.translate(shape.x, shape.y);
+            p.rotate(shape.rotation);
+            
+            if (shape.isAngular) {
+              // Angular version with hard edges
+              p.fill(shape.color);
+              p.noStroke();
+              
+              // Create an angular-looking shape
+              p.beginShape();
+              for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * p.TWO_PI;
+                const radius = (i % 2 === 0) ? shape.width / 2 : shape.width / 2 * 0.8;
+                const x = p.cos(angle) * radius;
+                const y = p.sin(angle) * radius * (shape.height / shape.width);
+                p.vertex(x, y);
+              }
+              p.endShape(p.CLOSE);
+            } else {
+              p.fill(shape.color);
+              p.noStroke();
+              p.rect(-shape.width/2, -shape.height/2, shape.width, shape.height);
+            }
+            
+            p.pop();
+          }
+        }
+        
+        // Render geometric elements
+        for (let element of geometricElements) {
+          p.push();
+          p.translate(element.x, element.y);
+          p.rotate(element.rotation);
+          
+          p.fill(element.color);
+          p.noStroke();
+          
+          // Draw the appropriate shape
+          if (element.shape === "circle") {
+            p.ellipse(0, 0, element.size, element.size);
+          } else if (element.shape === "rectangle") {
+            p.rect(-element.size/2, -element.size/2, element.size, element.size);
+          } else if (element.shape === "triangle") {
+            p.triangle(
+              0, -element.size/2,
+              -element.size/2, element.size/2,
+              element.size/2, element.size/2
+            );
+          } else if (element.shape === "hexagon") {
+            p.beginShape();
+            for (let i = 0; i < 6; i++) {
+              const angle = (i / 6) * p.TWO_PI;
+              const x = p.cos(angle) * element.size/2;
+              const y = p.sin(angle) * element.size/2;
+              p.vertex(x, y);
+            }
+            p.endShape(p.CLOSE);
+          } else if (element.shape === "cross") {
+            const armWidth = element.size * 0.3;
+            p.rect(-armWidth/2, -element.size/2, armWidth, element.size);
+            p.rect(-element.size/2, -armWidth/2, element.size, armWidth);
+          }
+          
+          p.pop();
+        }
+        
+        // Render lines
+        for (let line of lines) {
+          if (line.type === "curved") {
+            // Draw curved line
+            p.stroke(line.color);
+            p.strokeWeight(line.width);
+            p.noFill();
+            
+            p.beginShape();
+            p.vertex(line.x1, line.y1);
+            p.quadraticVertex(line.ctrlX, line.ctrlY, line.x2, line.y2);
+            p.endShape();
+          } else {
+            // Draw straight line
+            p.stroke(line.color);
+            p.strokeWeight(line.width);
+            p.line(line.x1, line.y1, line.x2, line.y2);
+          }
+        }
+        
+        // Render dynamic brush strokes
+        for (let stroke of dynamicBrushStrokes) {
+          drawImpastoBrushStroke(
+            stroke.x1, stroke.y1,
+            stroke.x2, stroke.y2,
+            stroke.width,
+            stroke.color,
+            stroke.thickness || 8,
+            stroke.turbulence || 10,
+            stroke.bristleDetail || "medium"
+          );
+        }
+        
+        // Add impasto lighting effects
+        addImpastoLighting();
+      }
+      
+      function renderSgraffitoComposition() {
+        // Render thick base layer
+        let baseLayer, topLayer;
+        for (let layer of underlayers) {
+          if (layer.type === "base") {
+            baseLayer = layer;
+          } else if (layer.type === "topLayer") {
+            topLayer = layer;
+          }
+        }
+        
+        // Draw base color
+        p.fill(baseLayer.color);
+        p.noStroke();
+        p.rect(0, 0, p.width, p.height);
+        
+        // Draw top layer that will be scratched
+        p.fill(topLayer.color);
+        p.rect(0, 0, p.width, p.height);
+        
+        // Render shapes as scratched areas
+        for (let shape of shapes) {
+          p.push();
+          p.translate(shape.x, shape.y);
+          p.rotate(shape.rotation);
+          
+          p.fill(baseLayer.color);
+          p.noStroke();
+          
+          if (shape.type === "vortex-wedge") {
+            // Skip special shapes for simplicity
+            p.pop();
+            continue;
+          } else if (shape.type === "crystal") {
+            p.beginShape();
+            for (let i = 0; i < shape.points; i++) {
+              const angle = (i / shape.points) * p.TWO_PI;
+              const radius = (i % 2 === 0) ? shape.width / 2 : shape.height / 2;
+              const x = p.cos(angle) * radius;
+              const y = p.sin(angle) * radius;
+              p.vertex(x, y);
+            }
+            p.endShape(p.CLOSE);
+          } else {
+            p.rect(-shape.width/2, -shape.height/2, shape.width, shape.height);
+          }
+          
+          // Add texture to the revealed area
+          for (let i = 0; i < 10; i++) {
+            let x = p.random(-shape.width/2, shape.width/2);
+            let y = p.random(-shape.height/2, shape.height/2);
+            let scratchLength = p.random(5, 20);
+            let angle = p.random(p.TWO_PI);
+            
+            p.stroke(p.red(baseLayer.color) - 20, p.green(baseLayer.color) - 20, p.blue(baseLayer.color) - 20);
+            p.strokeWeight(p.random(1, 3));
+            p.line(x, y, x + p.cos(angle) * scratchLength, y + p.sin(angle) * scratchLength);
+          }
+          
+          p.pop();
+        }
+        
+        // Render geometric elements as scratched shapes
+        for (let element of geometricElements) {
+          p.push();
+          p.translate(element.x, element.y);
+          p.rotate(element.rotation);
+          
+          p.fill(baseLayer.color);
+          p.noStroke();
+          
+          // Draw the appropriate shape
+          if (element.shape === "circle") {
+            p.ellipse(0, 0, element.size, element.size);
+          } else if (element.shape === "rectangle") {
+            p.rect(-element.size/2, -element.size/2, element.size, element.size);
+          } else if (element.shape === "triangle") {
+            p.triangle(
+              0, -element.size/2,
+              -element.size/2, element.size/2,
+              element.size/2, element.size/2
+            );
+          } else if (element.shape === "hexagon") {
+            p.beginShape();
+            for (let i = 0; i < 6; i++) {
+              const angle = (i / 6) * p.TWO_PI;
+              const x = p.cos(angle) * element.size/2;
+              const y = p.sin(angle) * element.size/2;
+              p.vertex(x, y);
+            }
+            p.endShape(p.CLOSE);
+          }
+          
+          p.pop();
+        }
+        
+        // Render lines as scratched lines
+        for (let line of lines) {
+          p.stroke(baseLayer.color);
+          p.strokeWeight(line.width);
+          
+          if (line.type === "curved") {
+            p.noFill();
+            p.beginShape();
+            p.vertex(line.x1, line.y1);
+            p.quadraticVertex(line.ctrlX, line.ctrlY, line.x2, line.y2);
+            p.endShape();
+          } else {
+            p.line(line.x1, line.y1, line.x2, line.y2);
+          }
+        }
+        
+        // Render dynamic brush strokes as sgraffito cuts
+        for (let stroke of dynamicBrushStrokes) {
+          drawSgraffitoCut(
+            stroke.x, stroke.y,
+            stroke.length,
+            stroke.angle,
+            stroke.width,
+            stroke.curve,
+            stroke.revealColor,
+            stroke.type
+          );
+        }
+      }
+      
+      function renderDryBrushComposition() {
+        // First render textured underlayer
+        for (let layer of underlayers) {
+          if (layer.type === "base") {
+            p.fill(layer.color);
+            p.noStroke();
+            p.rect(0, 0, p.width, p.height);
+            
+            // Add texture to base
+            drawBaseTexture(layer.texture);
+          }
+        }
+        
+        // Render shapes with dry brush effect
+        for (let shape of shapes) {
+          p.push();
+          p.translate(shape.x, shape.y);
+          p.rotate(shape.rotation);
+          
+          if (shape.type === "vortex-wedge") {
+            // Skip special shapes for simplicity
+            p.pop();
+            continue;
+          } else {
+            // Create shape outline with broken edges
+            const segments = 20;
+            const points = [];
+            
+            // Generate points for the shape with broken edges
+            for (let i = 0; i < segments; i++) {
+              const t = i / segments;
+              let x, y;
+              
+              if (shape.type === "crystal") {
+                const angle = (i / segments) * p.TWO_PI;
+                const radius = (i % 2 === 0) ? shape.width / 2 : shape.height / 2;
+                x = p.cos(angle) * radius;
+                y = p.sin(angle) * radius;
+              } else {
+                if (t < 0.25) { // Top edge
+                  x = p.map(t * 4, 0, 1, -shape.width/2, shape.width/2);
+                  y = -shape.height/2 + p.random(-3, 3);
+                } else if (t < 0.5) { // Right edge
+                  x = shape.width/2 + p.random(-3, 3);
+                  y = p.map((t - 0.25) * 4, 0, 1, -shape.height/2, shape.height/2);
+                } else if (t < 0.75) { // Bottom edge
+                  x = p.map((t - 0.5) * 4, 0, 1, shape.width/2, -shape.width/2);
+                  y = shape.height/2 + p.random(-3, 3);
+                } else { // Left edge
+                  x = -shape.width/2 + p.random(-3, 3);
+                  y = p.map((t - 0.75) * 4, 0, 1, shape.height/2, -shape.height/2);
+                }
+              }
+              
+              points.push({x, y});
+            }
+            
+            // Draw the shape with dry brush effect
+            p.fill(shape.color);
+            p.noStroke();
+            p.beginShape();
+            for (let point of points) {
+              p.vertex(point.x, point.y);
+            }
+            p.endShape(p.CLOSE);
+          }
+          
+          p.pop();
+        }
+        
+        // Render geometric elements with dry brush effect
+        for (let element of geometricElements) {
+          p.push();
+          p.translate(element.x, element.y);
+          p.rotate(element.rotation);
+          
+          p.noFill();
+          p.stroke(element.color);
+          p.strokeWeight(3);
+          
+          // Draw the appropriate shape with broken outline
+          if (element.shape === "circle") {
+            // Draw circle as a series of arcs with breaks
+            const segments = 20;
+            for (let i = 0; i < segments; i++) {
+              // Skip some segments for broken effect
+              if (p.random() < 0.2) continue;
+              
+              const startAngle = (i / segments) * p.TWO_PI;
+              const endAngle = ((i + 1) / segments) * p.TWO_PI;
+              
+              p.arc(0, 0, element.size, element.size, startAngle, endAngle);
+            }
+          } else if (element.shape === "rectangle") {
+            // Draw rectangle as a series of lines with breaks
+            const w = element.size;
+            const h = element.size;
+            
+            // Draw each edge with breaks
+            drawBrokenLine(-w/2, -h/2, w/2, -h/2, element.color); // Top
+            drawBrokenLine(w/2, -h/2, w/2, h/2, element.color); // Right
+            drawBrokenLine(w/2, h/2, -w/2, h/2, element.color); // Bottom
+            drawBrokenLine(-w/2, h/2, -w/2, -h/2, element.color); // Left
+          } else if (element.shape === "triangle") {
+            // Draw triangle as three broken lines
+            drawBrokenLine(0, -element.size/2, -element.size/2, element.size/2, element.color);
+            drawBrokenLine(-element.size/2, element.size/2, element.size/2, element.size/2, element.color);
+            drawBrokenLine(element.size/2, element.size/2, 0, -element.size/2, element.color);
+          }
+          
+          p.pop();
+        }
+        
+        // Helper function for drawing broken lines
+        function drawBrokenLine(x1, y1, x2, y2, lineColor) {
+          const segments = 10;
+          for (let i = 0; i < segments; i++) {
+            // Skip some segments for broken effect
+            if (p.random() < 0.3) continue;
+            
+            const startPct = i / segments;
+            const endPct = (i + 1) / segments;
+            
+            const startX = p.lerp(x1, x2, startPct);
+            const startY = p.lerp(y1, y2, startPct);
+            const endX = p.lerp(x1, x2, endPct);
+            const endY = p.lerp(y1, y2, endPct);
+            
+            drawDryBrushStroke(
+              startX, startY, endX, endY,
+              p.random(1, 4),
+              lineColor,
+              p.random(0.2, 0.7),
+              p.random(0.1, 0.5),
+              "line"
+            );
+          }
+        }
+        
+        // Render lines with dry brush effect
+        for (let line of lines) {
+          drawDryBrushStroke(
+            line.x1, line.y1,
+            line.x2, line.y2,
+            line.width,
+            line.color,
+            p.random(0.3, 0.8),
+            p.random(0.2, 0.6),
+            line.type
+          );
+        }
+        
+        // Render dynamic brush strokes
+        for (let stroke of dynamicBrushStrokes) {
+          drawDryBrushStroke(
+            stroke.x1, stroke.y1,
+            stroke.x2, stroke.y2,
+            stroke.width,
+            stroke.color,
+            stroke.pressure,
+            stroke.breakage,
+            stroke.type
+          );
+        }
+      }
+      
+      // TECHNIQUE-SPECIFIC RENDERING FUNCTIONS
+      
+      function drawImpastoBrushStroke(x1, y1, x2, y2, width, color, thickness = 10, turbulence = 10, detailLevel = "medium") {
+        p.push();
+        
+        let len = p.dist(x1, y1, x2, y2);
+        let angle = p.atan2(y2 - y1, x2 - x1);
+        
+        // Create multiple layers for 3D effect
+        let layers = 4; // More layers for thicker impasto
+        
+        for (let layer = 0; layer < layers; layer++) {
+          // Prepare for this layer
+          let layerWidth = p.map(layer, 0, layers-1, width * 0.8, width * 1.2);
+          let shadowAmount = p.map(layer, 0, layers-1, -30, 30);
+          
+          // Adjust color for shadow/highlight
+          let layerColor = p.color(
+            p.constrain(p.red(color) + shadowAmount, 0, 255),
+            p.constrain(p.green(color) + shadowAmount, 0, 255),
+            p.constrain(p.blue(color) + shadowAmount, 0, 255),
+            p.alpha(color)
+          );
+          
+          // Create stroke with peaks and valleys
+          let segments = p.floor(p.map(len, 0, 200, 5, 20));
+          
+          p.beginShape();
+          p.noFill();
+          p.stroke(layerColor);
+          
+          // Create bristle-like texture for highest detail level
+          if (detailLevel === "high") {
+            let bristleCount = p.floor(p.map(width, 5, 30, 3, 8));
+            let bristleWidth = layerWidth / bristleCount;
+            
+            for (let b = 0; b < bristleCount; b++) {
+              let bristleOffset = p.map(b, 0, bristleCount-1, -layerWidth/2, layerWidth/2);
+              let bristleAngle = angle + p.PI/2;
+              
+              // Each bristle has its own pressure variations
+              p.strokeWeight(p.random(1, 3));
+              
+              p.beginShape();
+              for (let i = 0; i <= segments; i++) {
+                let t = i / segments;
+                let x = p.lerp(x1, x2, t);
+                let y = p.lerp(y1, y2, t);
+                
+                // Add turbulence
+                let noiseValue = p.noise(x * 0.01, y * 0.01, b * 10);
+                let turbulenceAmount = p.map(noiseValue, 0, 1, -turbulence, turbulence);
+                
+                // Pressure variation
+                let pressure = 1 + p.sin(t * p.PI) * 0.5;
+                p.strokeWeight(bristleWidth * pressure);
+                
+                // Apply turbulence perpendicular to stroke direction
+                let perpX = p.cos(bristleAngle) * (bristleOffset + turbulenceAmount);
+                let perpY = p.sin(bristleAngle) * (bristleOffset + turbulenceAmount);
+                
+                // Skip some segments for texture
+                if (p.random() > 0.1) {
+                  p.vertex(x + perpX, y + perpY);
+                }
+              }
+              p.endShape();
+            }
+          } else {
+            // Simpler stroke for medium/low detail
+            p.strokeWeight(layerWidth);
+            p.beginShape();
+            for (let i = 0; i <= segments; i++) {
+              let t = i / segments;
+              let x = p.lerp(x1, x2, t);
+              let y = p.lerp(y1, y2, t);
+              
+              // Add turbulence
+              let noiseValue = p.noise(x * 0.01, y * 0.01, layer);
+              let turbulenceAmount = p.map(noiseValue, 0, 1, -turbulence, turbulence);
+              
+              // Pressure variation
+              let pressure = 1 + p.sin(t * p.PI) * 0.5;
+              p.strokeWeight(layerWidth * pressure);
+              
+              // Calculate perpendicular angle
+              let perpAngle = angle + p.PI/2;
+              
+              // Apply turbulence perpendicular to stroke direction
+              let perpX = p.cos(perpAngle) * turbulenceAmount;
+              let perpY = p.sin(perpAngle) * turbulenceAmount;
+              
+              p.vertex(x + perpX, y + perpY);
+            }
+            p.endShape();
+          }
+        }
+        
+        // Add highlights and shadows
+        let lightAngle = p.PI/4; // Light coming from top-right
+        let shadowOffset = thickness * 0.5;
+        
+        // Shadow
+        p.push();
+        p.translate(shadowOffset * p.cos(lightAngle + p.PI), shadowOffset * p.sin(lightAngle + p.PI));
+        p.noStroke();
+        p.fill(0, 0, 0, 40);
+        p.beginShape();
+        for (let i = 0; i <= 10; i++) {
+          let t = i / 10;
+          let x = p.lerp(x1, x2, t);
+          let y = p.lerp(y1, y2, t);
+          p.vertex(x, y);
+        }
+        p.endShape();
+        p.pop();
+        
+        // Highlights
+        p.stroke(255, 255, 255, 100);
+        p.strokeWeight(width * 0.3);
+        let highlightX1 = x1 + p.cos(lightAngle) * (width * 0.1);
+        let highlightY1 = y1 + p.sin(lightAngle) * (width * 0.1);
+        let highlightX2 = x2 + p.cos(lightAngle) * (width * 0.1);
+        let highlightY2 = y2 + p.sin(lightAngle) * (width * 0.1);
+        p.line(highlightX1, highlightY1, highlightX2, highlightY2);
+        
+        p.pop();
+      }
+      
+      function drawSgraffitoCut(x, y, length, angle, width, curve, revealColor, type) {
+        p.push();
+        p.translate(x, y);
+        p.rotate(angle);
+        
+        // The cut reveals the underlying color
+        p.stroke(revealColor);
+        p.strokeWeight(width);
+        p.noFill();
+        
+        if (curve === 0) {
+          // Straight cut
+          p.line(0, 0, length, 0);
+        } else {
+          // Curved cut
+          p.beginShape();
+          for (let i = 0; i <= 10; i++) {
+            let t = i / 10;
+            let xPos = t * length;
+            let yPos = p.sin(t * p.PI) * length * curve;
+            p.vertex(xPos, yPos);
+          }
+          p.endShape();
+        }
+        
+        // Add texture to the cut
+        let textureCount = p.floor(p.random(3, 8));
+        for (let i = 0; i < textureCount; i++) {
+          let x1 = p.random(length);
+          let y1 = p.random(-width, width);
+          let segLength = p.random(5, 20);
+          
+          p.stroke(p.red(revealColor) - 20, p.green(revealColor) - 20, p.blue(revealColor) - 20);
+          p.strokeWeight(p.random(1, width * 0.8));
+          p.line(x1, y1, x1 + segLength, y1 + p.random(-5, 5));
+        }
+        
+        p.pop();
+      }
+      
+      function drawDryBrushStroke(x1, y1, x2, y2, width, color, pressure, breakage, type) {
+        p.push();
+        p.stroke(color);
+        p.noFill();
+        
+        let len = p.dist(x1, y1, x2, y2);
+        let angle = p.atan2(y2 - y1, x2 - x1);
+        
+        // Dry brush has broken, textured strokes
+        let segments = p.floor(p.map(len, 0, 100, 5, 20));
+        
+        // Create multiple bristles
+        let bristleCount = p.floor(p.random(3, 7));
+        
+        for (let b = 0; b < bristleCount; b++) {
+          let bristleOffset = p.map(b, 0, bristleCount-1, -width/2, width/2);
+          let perpAngle = angle + p.PI/2;
+          
+          // Each bristle has gaps and varying pressure
+          for (let i = 0; i < segments; i++) {
+            // Skip segments based on breakage factor
+            if (p.random() < breakage) continue;
+            
+            let t1 = i / segments;
+            let t2 = (i + 1) / segments;
+            
+            let x1seg = p.lerp(x1, x2, t1);
+            let y1seg = p.lerp(y1, y2, t1);
+            let x2seg = p.lerp(x1, x2, t2);
+            let y2seg = p.lerp(y1, y2, t2);
+            
+            // Add randomness to bristle position
+            let bristleX1 = x1seg + p.cos(perpAngle) * (bristleOffset + p.random(-width/4, width/4));
+            let bristleY1 = y1seg + p.sin(perpAngle) * (bristleOffset + p.random(-width/4, width/4));
+            let bristleX2 = x2seg + p.cos(perpAngle) * (bristleOffset + p.random(-width/4, width/4));
+            let bristleY2 = y2seg + p.sin(perpAngle) * (bristleOffset + p.random(-width/4, width/4));
+            
+            // Pressure variations
+            let segmentPressure = pressure * p.random(0.5, 1.5) * p.sin(t1 * p.PI);
+            p.strokeWeight(width * 0.2 * segmentPressure);
+            
+            // Draw bristle segment
+            p.line(bristleX1, bristleY1, bristleX2, bristleY2);
+          }
+        }
+        
+        p.pop();
+      }
+      
+      function drawBaseTexture(textureType) {
+        // Add texture to base layer
+        if (textureType === "rough") {
+          for (let i = 0; i < 5000; i++) {
+            let x = p.random(p.width);
+            let y = p.random(p.height);
+            
+            p.stroke(255, p.random(5, 20));
+            p.point(x, y);
+          }
+          
+          // Add some canvas grain lines
+          p.stroke(0, 10);
+          for (let i = 0; i < 200; i++) {
+            let x = p.random(p.width);
+            let y = p.random(p.height);
+            let len = p.random(5, 20);
+            let angle = p.random(p.TWO_PI);
+            
+            p.line(
+              x, y,
+              x + p.cos(angle) * len,
+              y + p.sin(angle) * len
+            );
+          }
+        }
+      }
+      
+      function addImpastoLighting() {
+        // Add global lighting effects for impasto
+        let lightDir = p.PI/4; // Light from top-right
+        
+        // Cast shadows from thick geometric elements
+        for (let element of geometricElements) {
+          if (element.height) {
+            let shadowX = element.x + p.cos(lightDir + p.PI) * (element.height || 10);
+            let shadowY = element.y + p.sin(lightDir + p.PI) * (element.height || 10);
+            
+            p.fill(0, 0, 0, 40);
+            p.noStroke();
+            
+            if (element.shape === "circle") {
+              p.ellipse(shadowX, shadowY, element.size * 1.2, element.size * 1.2);
+            } else if (element.shape === "rectangle") {
+              p.push();
+              p.translate(shadowX, shadowY);
+              p.rotate(element.rotation);
+              p.rect(-element.size/2, -element.size/2, element.size, element.size);
+              p.pop();
+            } else if (element.shape === "triangle") {
+              p.push();
+              p.translate(shadowX, shadowY);
+              p.rotate(element.rotation);
+              p.triangle(
+                0, -element.size/2,
+                -element.size/2, element.size/2,
+                element.size/2, element.size/2
+              );
+              p.pop();
+            }
+          }
+        }
+        
+        // Add specular highlights where light hits
+        for (let i = 0; i < 100; i++) {
+          let x = p.random(p.width);
+          let y = p.random(p.height);
+          let size = p.random(1, 5);
+          
+          p.fill(255, p.random(50, 150));
+          p.noStroke();
+          p.ellipse(x, y, size, size);
+        }
+      }
+      
+      function addVignette() {
+        // Add vignette border to image
+        p.push();
+        p.noFill();
+        for (let i = 0; i < 100; i++) {
+          let alpha = p.map(i, 0, 99, 0, 5);
+          p.stroke(0, alpha);
+          p.ellipse(p.width/2, p.height/2, p.width - i * 3, p.height - i * 3);
+        }
+        p.pop();
+      }
+    };
+    
+    new p5(sketch);
+    
+    // Animation for header text
+          // Window resize handler
+      p.windowResized = function() {
+        const newSize = calculateCanvasSize();
+        if (Math.abs(newSize - canvasSize) > 50) { // Only resize if there's a significant change
+          canvasSize = newSize;
+          p.resizeCanvas(canvasSize, canvasSize);
+          generateNewComposition();
+          p.redraw();
+        }
+      };
+      
+      // Download function removed
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Add hover animation for buttons and social links
+        document.querySelectorAll('button, .social-links a').forEach(element => {
+          element.addEventListener('mouseover', function() {
+            this.style.transition = 'all 0.3s ease';
+            this.style.transform = 'translateY(-3px)';
+          });
+          element.addEventListener('mouseout', function() {
+            this.style.transform = 'translateY(0)';
+          });
+        });
+      });
+  </script>
+</body>
+</html>
