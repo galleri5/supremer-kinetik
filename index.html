@@ -7,6 +7,8 @@
   <link rel="icon" type="image/svg+xml"
       href="data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text x='50%' y='50%' dy='.35em' text-anchor='middle' font-size='60'>𓆟</text></svg>">
 
+  <meta property="og:image" content="https://aws-website-linkdot-63uzi.s3.us-east-1.amazonaws.com/og-supremer-kinetik.png" />
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <!-- Import Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +17,9 @@
   <!-- Import Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+
+
+
     :root {
       --primary-color: #e41f24;
       --secondary-color: #000;
@@ -170,8 +175,8 @@
     .slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       background: var(--primary-color);
       cursor: pointer;
       border-radius: 50%;
@@ -183,8 +188,8 @@
     }
     
     .slider::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       background: var(--primary-color);
       cursor: pointer;
       border: none;
@@ -297,6 +302,7 @@
     
     /* Attributes panel comes after canvas */
     .attributes-panel { 
+      margin-top: calc(100vh - 600px);
         order: 3; 
     }
     
@@ -315,16 +321,85 @@
   color: #fff !important;
 }
 
+/* Inline info icon: small, green, not too attention-grabbing */
+.info-icon {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  color: #2ecc71; /* or a subtle green you like */
+  cursor: pointer;
+}
+
+/* Bottom sheet modal: hidden by default */
+.info-modal {
+  position: fixed;
+  left: 0;
+  bottom: -100%; /* push it fully below viewport */
+  width: 100%;
+  background: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+  transition: bottom 0.3s ease;
+  z-index: 1500;
+  padding: 1rem;
+}
+
+/* Slide it up when .open is added */
+.info-modal.open {
+  bottom: 0;
+}
+
+/* Modal content styling */
+.info-modal-content {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #333;
+  line-height: 1.4;
+  /* Keep the text left-aligned if you prefer, or add text-align: center here. */
+}
+
+.close-modal-icon {
+  display: block;
+  margin: 2rem auto 0;  /* top margin for spacing, auto left/right to center */
+  font-size: 1.4rem;
+  color: #333;
+  cursor: pointer;
+  text-align: center;
+
+}
+
+/* Close button inside the modal */
+.close-modal-button {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+
+
+
+
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>SUPREMIR KINETIK</h1>
+    <h1>SUPREMIR KINETIK </h1>
     <p>
-        A gestalt exploration of 20th century art movements.  
-        <a href="https://github.com/galleri5/supremer-kinetik" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+      
+        A gestalt exploration of 20th century art movements. 
+        <span id="infoButton" class="info-icon">
+          <i class="fas fa-info-circle"></i>
+        </span> 
+        
     </p>
-    <p class="inspired-by">Inspired by <a href="https://x.com/IOivm/status/1894218453483229365" target="_blank">this tweet</a></p>
+    <p class="inspired-by">  <a href="https://github.com/galleri5/supremer-kinetik" target="_blank"><i class="fab fa-github fa-lg"></i></a> Inspired by <a href="https://x.com/IOivm/status/1894218453483229365" target="_blank">this tweet</a></p>
   </div>
   
   <!-- GitHub container removed as requested -->
@@ -361,10 +436,26 @@
     <!-- Canvas will be inserted here by p5.js -->
   </div>
   
+  <!-- Bottom Sheet Modal -->
+  <div id="infoModal" class="info-modal">
+    <div class="info-modal-content">
+      <p>
+        First there was the point. A stab in the void. A bullet hole in the canvas of nothing. Then the point got antsy, right? It dragged itself sideways like a cockroach fleeing light—boom, you got a line. A scar. A crack in the cosmic egg. But lines get lonely. They breed. They tangle. They birth planes, angles, shapes that box you in, carve the world into prisons of right angles and Ikea shelves. Congratulations, you’ve built a cage. You stack them, howling about circles humming spirituals, yellow screaming like a car alarm. Feeling through geometry. Sure. Tell that to the static eating your brain.
+        <br><br>
+        Composition isn’t arrangement. It’s arson. You don’t create—you uncreate. Peel the skin off reality. That black square? It’s not a shape. It’s the absence of shape. The line? A noose. The dot? A tombstone. Kandinsky’s rainbows? Just the sound of a mind clawing at its own walls. Start with the point. End with the void. Everything else? Noise. Decoration. A graffitied urinal. Now go—draw a line. Then erase it. That’s art.
+      </p>
+      <span id="closeModal" class="close-modal-icon">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+  </div>
+
+
+
   <div class="footer">
     <div class="footer-content">
       <div class="footer-left">
-        <p>Vibe coded with <span class="color-red">✨</span> and p5js by <a href="http://linkdot.link" target="_blank"> Harsha </a> at <strong> <a href="https://github.com/galleri5" target="_blank"> galleri5 </a> </strong> ( part of Collective Artists Network ) </p>
+        <p>Made with <span class="color-red">✨</span> and p5js by <a href="http://linkdot.link" target="_blank"> Harsha </a> at <strong> <a href="https://github.com/galleri5" target="_blank"> galleri5 </a> </strong> ( part of Collective Artists Network ) </p>
       </div>
       <div class="footer-right">
         <div class="social-links">
@@ -2064,17 +2155,7 @@
     
     new p5(sketch);
     
-    // Animation for header text
-          // Window resize handler
-      p.windowResized = function() {
-        const newSize = calculateCanvasSize();
-        if (Math.abs(newSize - canvasSize) > 50) { // Only resize if there's a significant change
-          canvasSize = newSize;
-          p.resizeCanvas(canvasSize, canvasSize);
-          generateNewComposition();
-          p.redraw();
-        }
-      };
+
       
       // Download function removed
       
@@ -2090,6 +2171,60 @@
           });
         });
       });
+
+    // Toggle modal open
+document.getElementById('infoButton').addEventListener('click', function() {
+  document.getElementById('infoModal').classList.add('open');
+});
+
+// Close modal
+document.getElementById('closeModal').addEventListener('click', function() {
+  document.getElementById('infoModal').classList.remove('open');
+});
+
+
+
+  const infoModal = document.getElementById('infoModal');
+  const infoModalContent = document.querySelector('.info-modal-content');
+
+  infoModal.addEventListener('click', function(event) {
+    // If the click is not inside the .info-modal-content, close the modal
+    if (!infoModalContent.contains(event.target)) {
+      this.classList.remove('open');
+    }
+  });
+
+
   </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const infoButton = document.getElementById('infoButton');
+    const infoModal = document.getElementById('infoModal');
+    const infoModalContent = document.querySelector('.info-modal-content');
+    const closeModalIcon = document.getElementById('closeModal');
+  
+    // Open modal on info icon click
+    infoButton.addEventListener('click', () => {
+      infoModal.classList.add('open');
+    });
+  
+    // Close modal on "X" click
+    closeModalIcon.addEventListener('click', (event) => {
+      infoModal.classList.remove('open');
+      event.stopPropagation(); // prevent it from counting as an outside click
+    });
+  
+    // Close modal when clicking outside .info-modal-content
+    infoModal.addEventListener('click', (event) => {
+      // if the click target is not inside the modal content
+      if (!infoModalContent.contains(event.target)) {
+        infoModal.classList.remove('open');
+      }
+    });
+  });
+  </script>
+
 </body>
 </html>
